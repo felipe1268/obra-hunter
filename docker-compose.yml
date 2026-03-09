@@ -1,6 +1,7 @@
 version: "3.9"
 
 services:
+  # ==================== Backend API ====================
   api:
     build:
       context: ./backend
@@ -20,6 +21,7 @@ services:
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     restart: unless-stopped
 
+  # ==================== PostgreSQL ====================
   db:
     image: postgres:16-alpine
     container_name: obrahunter-db
@@ -38,6 +40,7 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # ==================== Redis ====================
   redis:
     image: redis:7-alpine
     container_name: obrahunter-redis
@@ -47,6 +50,7 @@ services:
       - redis_data:/data
     restart: unless-stopped
 
+  # ==================== Frontend ====================
   frontend:
     build:
       context: ./frontend
