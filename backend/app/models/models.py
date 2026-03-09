@@ -1,6 +1,6 @@
 """
 ObraHunter - Modelos do banco de dados
-Versão completa com multi-usuário, notificações in-app e times
+VersÃ£o completa com multi-usuÃ¡rio, notificaÃ§Ãµes in-app e times
 """
 from datetime import datetime
 from sqlalchemy import (
@@ -99,7 +99,7 @@ obra_empresa = Table(
 )
 
 
-# ==================== USUÁRIOS E NOTIFICAÇÕES ====================
+# ==================== USUÃRIOS E NOTIFICAÃÃES ====================
 
 class Usuario(Base):
     __tablename__ = "usuarios"
@@ -112,7 +112,7 @@ class Usuario(Base):
     ativo = Column(Boolean, default=True)
     avatar_url = Column(String(500), nullable=True)
 
-    # Preferências de notificação
+    # PreferÃªncias de notificaÃ§Ã£o
     notificacoes_ativas = Column(Boolean, default=True)
     score_minimo_notificacao = Column(Float, default=7.0)
     estados_interesse = Column(JSON, nullable=True)
@@ -129,7 +129,7 @@ class Usuario(Base):
 
 
 class Notificacao(Base):
-    """Notificações in-app — centro de alertas do painel"""
+    """NotificaÃ§Ãµes in-app â centro de alertas do painel"""
     __tablename__ = "notificacoes"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -140,10 +140,10 @@ class Notificacao(Base):
     mensagem = Column(Text, nullable=True)
     lida = Column(Boolean, default=False, index=True)
 
-    # Referência à obra
+    # ReferÃªncia Ã  obra
     obra_id = Column(Integer, ForeignKey("obras.id", ondelete="SET NULL"), nullable=True)
     score = Column(Float, nullable=True)
-    icone = Column(String(50), nullable=True)  # nome do ícone lucide
+    icone = Column(String(50), nullable=True)  # nome do Ã­cone lucide
 
     # Dados extras
     dados = Column(JSON, nullable=True)
@@ -193,7 +193,7 @@ class Obra(Base):
     score_oportunidade = Column(Float, default=0.0, index=True)
     notificacao_enviada = Column(Boolean, default=False)
 
-    # Vendedor responsável
+    # Vendedor responsÃ¡vel
     responsavel_id = Column(Integer, ForeignKey("usuarios.id", ondelete="SET NULL"), nullable=True)
 
     data_encontrada = Column(DateTime, default=datetime.utcnow, index=True)
@@ -302,6 +302,7 @@ class BuscaAutomatica(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     execucoes = relationship("ExecucaoBusca", back_populates="busca", cascade="all, delete-orphan")
+    alertas = relationship("ConfigAlerta", back_populates="busca", cascade="all, delete-orphan")
 
 
 class ExecucaoBusca(Base):
@@ -320,3 +321,16 @@ class ExecucaoBusca(Base):
     fim = Column(DateTime, nullable=True)
 
     busca = relationship("BuscaAutomatica", back_populates="execucoes")
+
+
+class ConfigAlerta(Base):
+    __tablename__ = "config_alertas"
+
+    id = Column(Integer, primary_key=True, index=True)
+    busca_id = Column(Integer, ForeignKey("buscas_automaticas.id", ondelete="CASCADE"))
+    tipo = Column(String(50), nullable=False)
+    destino = Column(String(255), nullable=True)
+    ativo = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    busca = relationship("BuscaAutomatica", back_populates="alertas")
