@@ -74,6 +74,12 @@ class FrequenciaBusca(str, enum.Enum):
     SEMANAL = "semanal"
     PERSONALIZADA = "personalizada"
 
+class TipoAlerta(str, enum.Enum):
+    EMAIL = "email"
+    WHATSAPP = "whatsapp"
+    SMS = "sms"
+    WEBHOOK = "webhook"
+
 class UserRole(str, enum.Enum):
     ADMIN = "admin"
     GERENTE = "gerente"
